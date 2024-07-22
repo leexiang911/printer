@@ -27,12 +27,16 @@ const pasetHandle = (event: { clipboardData: any }) => {
   }
   ElMessage.success('粘贴成功')
 
-  console.log('rows', rows)
 
   for (const text of rows) {
     let cells = text.split('\t')
+    const filteredArr = cells.filter(item => item !== "");
+    console.log(filteredArr)
+    if (filteredArr.length == 0) {
+      return;
+    }
+    let storeName: string = cells[1].replace('墨书', 'M').replace('炫亮', 'X');
 
-    let storeName: string = cells[0].replace('墨书', 'M').replace('炫亮', 'X')
 
     tableArrData.value.push({
       index: startNumber++,
@@ -51,8 +55,8 @@ const openVn = () => {
       h('i', { style: 'color: teal' }, 'VNode')
     ])
   })
-  let html = document.getElementsByTagName('html')[0]
-  html.classList.add('dark')
+  // let html = document.getElementsByTagName('html')[0]
+  // html.classList.add('dark')
 }
 </script>
 

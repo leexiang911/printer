@@ -48,27 +48,23 @@ const handleDelete = (index: number, row: User) => {
     <el-table-column label="Date" width="120">
       <template #default="scope">{{ scope.row.date }}</template>
     </el-table-column>
-    <el-table-column property="name" label="Name" width="200" />
-    <el-table-column property="name" label="item" width="200" />
-    <el-table-column property="name" label="shop name" width="200" />
-    <el-table-column property="name" label="order id" width="200" />
+    <el-table-column property="name" label="Shop name" width="200" />
+    <el-table-column property="name" label="Nick name" width="200" />
+    <el-table-column property="name" label="Order id" width="200" />
+    <el-table-column property="name" label="Item" width="200" />
 
-    <el-table-column property="name" label="tracking number" width="200" />
 
-    <el-table-column
-      property="address"
-      label="use show-overflow-tooltip"
-      width="240"
-      show-overflow-tooltip
-    />
+    <el-table-column property="name" label="Tracking number" width="200" />
+
+    <el-table-column property="address" label="Remark" width="240" show-overflow-tooltip />
 
     <el-table-column label="Operations">
       <template #default="scope">
-        <el-button size="small" @click="handleEdit(scope.$index, scope.row)"> 编辑 </el-button>
+        <el-button size="small" @click="handleEdit(scope.$index, scope.row)"> Edit </el-button>
         <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">
-          删除
+          Detle
         </el-button>
-        <el-button size="small" type="primary">打印</el-button>
+        <el-button size="small" type="primary">Print</el-button>
       </template>
     </el-table-column>
   </el-table>
