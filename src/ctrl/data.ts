@@ -8,4 +8,5 @@ export type tableType = {
     item: string;// 产品
     date: string;// 日期
     trackingNumber: string; //快递单号
+    action: string;//入库|返厂
 }
