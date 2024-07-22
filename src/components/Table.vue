@@ -4,12 +4,19 @@
  *@Description: 表格组件
 -->
 <script setup lang="ts">
+import type { tableType } from '@/ctrl/data'
 import { defineComponent, ref } from 'vue'
 interface User {
   date: string
   name: string
   address: string
 }
+const props = defineProps({
+  tableArr: {
+    type: Array<tableType>,
+    required: true
+  }
+})
 const tableData: User[] = [
   {
     date: '2016-05-04',
@@ -52,7 +59,6 @@ const handleDelete = (index: number, row: User) => {
     <el-table-column property="name" label="Nick name" width="200" />
     <el-table-column property="name" label="Order id" width="200" />
     <el-table-column property="name" label="Item" width="200" />
-
 
     <el-table-column property="name" label="Tracking number" width="200" />
 
