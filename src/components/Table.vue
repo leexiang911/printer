@@ -5,7 +5,7 @@
 -->
 <script setup lang="ts">
 import type { tableType } from '@/ctrl/data'
-import { defineComponent, ref } from 'vue'
+import { defineEmits, ref } from 'vue'
 interface User {
   date: string
   name: string
@@ -46,23 +46,24 @@ const handleEdit = (index: number, row: User) => {
 const handleDelete = (index: number, row: User) => {
   console.log(index, row)
 }
+const emit = defineEmits(['sendData'])
 </script>
 
 <template>
-  <el-table :data="tableData" style="width: 100%" stripe border>
+  <el-table :data="props.tableArr" style="width: 100%" stripe border>
     <el-table-column type="selection" width="55" />
     <el-table-column property="" label="No." width="80" />
     <el-table-column label="Date" width="120">
       <template #default="scope">{{ scope.row.date }}</template>
     </el-table-column>
-    <el-table-column property="name" label="Shop name" width="200" />
-    <el-table-column property="name" label="Nick name" width="200" />
-    <el-table-column property="name" label="Order id" width="200" />
-    <el-table-column property="name" label="Item" width="200" />
+    <el-table-column property="shopName" label="Shop name" width="200" />
+    <el-table-column property="nickName" label="Nick name" width="200" />
+    <el-table-column property="orderId" label="Order id" width="200" />
+    <el-table-column property="item" label="Item" width="200" />
 
-    <el-table-column property="name" label="Tracking number" width="200" />
+    <el-table-column property="trackingNumber" label="Tracking number" width="200" />
 
-    <el-table-column property="address" label="Remark" width="240" show-overflow-tooltip />
+    <el-table-column property="action" label="Action" width="240" show-overflow-tooltip />
 
     <el-table-column label="Operations">
       <template #default="scope">
