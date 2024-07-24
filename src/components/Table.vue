@@ -46,24 +46,38 @@ const handleEdit = (index: number, row: User) => {
 const handleDelete = (index: number, row: User) => {
   console.log(index, row)
 }
-const emit = defineEmits(['sendData'])
+const emits = defineEmits(['selectData', 'selectAllData'])
+const selectAdataHanle = (e: tableType[]) => {
+  emits('selectData', e)
+}
+const selectAllDataHandle = (e: tableType[]) => {
+  emits('selectData', e)
+}
 </script>
 
 <template>
-  <el-table :data="props.tableArr" style="width: 100%" stripe border>
+  <el-table
+    :data="props.tableArr"
+    style="width: 100%"
+    stripe
+    border
+    @select="selectAdataHanle"
+    @selectAll="selectAllDataHandle"
+  >
     <el-table-column type="selection" width="55" />
-    <el-table-column property="" label="No." width="80" />
+    <el-table-column property="Nub" label="No." width="80" />
     <el-table-column label="Date" width="120">
       <template #default="scope">{{ scope.row.date }}</template>
     </el-table-column>
-    <el-table-column property="shopName" label="Shop name" width="200" />
+    <el-table-column property="shopName" label="Shop name" width="130" />
     <el-table-column property="nickName" label="Nick name" width="200" />
-    <el-table-column property="orderId" label="Order id" width="200" />
-    <el-table-column property="item" label="Item" width="200" />
+    <el-table-column property="orderId" label="Order id" show-overflow-tooltip width="200" />
+    <el-table-column property="item" label="Item" width="250" show-overflow-tooltip />
 
     <el-table-column property="trackingNumber" label="Tracking number" width="200" />
 
-    <el-table-column property="action" label="Action" width="240" show-overflow-tooltip />
+    <el-table-column property="action" label="Action" width="100" show-overflow-tooltip />
+    <el-table-column property="remark" label="Remark" width="180" />
 
     <el-table-column label="Operations">
       <template #default="scope">
@@ -72,6 +86,7 @@ const emit = defineEmits(['sendData'])
           Detle
         </el-button>
         <el-button size="small" type="primary">Print</el-button>
+        <el-button size="small" type="primary" plain>Copy</el-button>
       </template>
     </el-table-column>
   </el-table>
