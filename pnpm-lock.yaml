@@ -11,6 +11,9 @@ importers:
       '@element-plus/icons-vue':
         specifier: ^2.3.1
         version: 2.3.1(vue@3.4.33(typescript@5.4.5))
+      dtpweb:
+        specifier: ^2.6.20240319
+        version: 2.6.20240319
       element-plus:
         specifier: ^2.7.7
         version: 2.7.7(vue@3.4.33(typescript@5.4.5))
@@ -693,6 +696,9 @@ packages:
   doctrine@3.0.0:
     resolution: {integrity: sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==}
     engines: {node: '>=6.0.0'}
+
+  dtpweb@2.6.20240319:
+    resolution: {integrity: sha512-SrvQvEPoX0b/2UO14KoSSs1IZTDsPobm8+zYVrrlFUGWTmgiT2TFnnodN/zchedUvpHARyCdTBBNhQ66J8xxtw==}
 
   element-plus@2.7.7:
     resolution: {integrity: sha512-7ucUiDAxevyBE8JbXBTe9ofHhS047VmWMLoksE45zZ08XSnhnyG7WUuk3gmDbAklfVMHedb9sEV3OovPUWt+Sw==}
@@ -1987,6 +1993,8 @@ snapshots:
   doctrine@3.0.0:
     dependencies:
       esutils: 2.0.3
+
+  dtpweb@2.6.20240319: {}
 
   element-plus@2.7.7(vue@3.4.33(typescript@5.4.5)):
     dependencies:

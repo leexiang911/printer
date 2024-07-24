@@ -3,6 +3,52 @@ import { ref, h, watch } from 'vue'
 import Empty from '@/components/Empty.vue'
 import Teble from '@/components/Table.vue'
 import type { tableType } from '@/ctrl/data'
+// 导入打印模块
+import { DTPWeb } from 'dtpweb'
+
+const test = async (data: tableType) => {
+  const date = new Date()
+  const api = DTPWeb.getInstance()
+
+  // 标签宽度
+  const labelWidth = 60
+  // 标签高度
+  const labelHeight = 40
+  const printerName = 'P1 Label Printer'
+  const fontHeight = 6
+
+  const text = `${data.Nub})
+${data.nickName}
+${data.item}
+${data.trackingNumber.slice(-4) + data.shopName}
+${data.action}         ${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${date.getHours()}:${date.getMinutes()} `
+  //  字体的高度，一般设置以后就有大小了
+  console.log(text)
+  // @ts-ignore
+  const isUse = await api.openPrinter(printerName, (success) => {
+    if (success) {
+      // 2. 创建一个指定大小的标签任务
+      api.startJob({ width: labelWidth, height: labelHeight, orientation: 90 })
+      // 3. 在标签纸上打印目标字符串
+      // @ts-ignore     widht属于标签宽度，height是绘制区域的高度，用来限制不要出现在标签边缘，容易模糊不清
+      api.drawText({
+        text,
+        fontHeight,
+        autoReturn: 0,
+        x: 1,
+        y: 1,
+        width: 56,
+        height: 56
+      })
+      // 4. 结束绘制操作，开始打印
+      api.commitJob(() => {
+        // 5. 关闭已经打开的打印机
+        api.closePrinter()
+      })
+    }
+  })
+  console.log(isUse, '完成了')
+}
 
 let startNumber = ref(0)
 let printDate = ref('')
@@ -21,29 +67,29 @@ const pasetHandle = (event: { clipboardData: any }) => {
   let pastedData = clipboardData.getData('text') as string
   pastedData = pastedData.replace(/\r/g, '') // 去除所有的 \r
   const rows = pastedData.split('\n') //  得到所有的行
-  console.log(rows, 'rows')
   if (rows.length === 0) {
     return
   }
 
   // 这里用foreach比较好
   rows.forEach((item, index, arr) => {
-    const cells = item.split('\t').filter((i) => i !== '')
-    if (cells.length < 4) {
-      ElMessage.error('格式错误')
+    const cells = item.split('\t')
+    // .filter((i) => i !== '')
 
+    if (item === '') {
+      console.log('没有')
       return
     }
-
+    arr.filter((i) => i !== '')
     const obj: tableType = {
       action: cells[11],
-      Nub: '0',
+      Nub: index.toString(),
       date: cells[0],
       shopName: cells[1],
       nickName: cells[2],
       orderId: cells[3],
       item: cells[4],
-      remark: '',
+      remark: cells[6],
       trackingNumber: cells[9]
     }
     if (startNumber.value) {
@@ -58,7 +104,6 @@ const pasetHandle = (event: { clipboardData: any }) => {
 }
 
 const openVn = () => {
-  // @ts-ignore
   ElMessage({
     message: h('p', { style: 'line-height: 1; font-size: 14px' }, [
       h('span', null, 'Message can be '),
@@ -66,6 +111,7 @@ const openVn = () => {
     ])
   })
 }
+// 监听数据变化
 watch([startNumber], (newValues, oldValues): void => {
   tableArrData.value.forEach((item, index, arr) => {
     // item.Nub = Number(oldValues[0]++).toString()
@@ -99,7 +145,8 @@ async function printFile(data: tableType) {
     // 打开文件
     // 读取文件内容
     // 将文件内容发送到打印机
-    console.log(data, '打印单个', data.Nub)
+    data.item = extractCourierInfo(data.item).product // 过滤掉快递等相关信息
+    await test(data)
   } catch (error) {
     // 处理打印错误
     console.error(error)
@@ -109,6 +156,43 @@ async function printFile(data: tableType) {
   }
   return true
 }
+function extractCourierInfo(text: string): { product: string; courier: string } {
+  const couriers: string[] = ['顺丰', '顺丰专配', '中通', '极兔']
+  const others: string[] = ['已开电子发票', '已开电子', '以开专票']
+  for (const item of others) {
+    const regex = new RegExp(item, 'g')
+    text = text.replace(regex, '').trim()
+  }
+
+  // 使用正则表达式匹配快递公司名称及其后面的一个字母
+  const regex = new RegExp(`(${couriers.join('|')})[A-Za-z]`, 'g')
+  const match = text.match(regex)
+
+  let courierName = ''
+  if (match) {
+    courierName = match[0].slice(0, -1) // 去掉最后一个字母
+    text = text.replace(match[0], '').trim()
+  }
+
+  // 去掉快递公司名称前的中文逗号
+  text = text.replace(/，$/, '').trim()
+
+  // 找到最短的匹配快递公司名称
+  let shortestCourier = courierName
+  for (const courier of couriers) {
+    if (courierName.includes(courier) && courier.length < shortestCourier.length) {
+      shortestCourier = courier
+    }
+  }
+
+  return { product: text, courier: shortestCourier }
+}
+
+// 示例用法
+const inputText = '166A硒鼓3K页1个中通l已开电子'
+const result = extractCourierInfo(inputText)
+console.log(result.product) // 输出： "T-2309C高配版粉盒1个"
+console.log(result.courier) // 输出： "顺丰"
 </script>
 
 <template>

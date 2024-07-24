@@ -76,8 +76,8 @@ const selectAllDataHandle = (e: tableType[]) => {
 
     <el-table-column property="trackingNumber" label="Tracking number" width="200" />
 
-    <el-table-column property="action" label="Action" width="100" show-overflow-tooltip />
-    <el-table-column property="remark" label="Remark" width="180" />
+    <el-table-column property="action" label="Action" width="100" />
+    <el-table-column property="remark" label="Remark" width="180" show-overflow-tooltip />
 
     <el-table-column label="Operations">
       <template #default="scope">
