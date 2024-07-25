@@ -5,7 +5,8 @@
 html,
 body {
   height: 100%;
-  width: 100%;
+  width: 100% !important;
+  /* 设置为100%，不然element的弹出窗会改变页面宽度 */
 }
 
 #app {

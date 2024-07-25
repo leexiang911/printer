@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref, h, watch } from 'vue'
-import Empty from '@/components/Empty.vue'
+import { ref, h, watch, reactive } from 'vue'
 import Teble from '@/components/Table.vue'
 import type { tableType } from '@/ctrl/data'
 // 导入打印模块
 import { DTPWeb } from 'dtpweb'
+
+const dialogTableVisible = ref(false)
 
 const test = async (data: tableType) => {
   const date = new Date()
@@ -49,7 +50,7 @@ ${data.action}         ${date.getFullYear()}/${date.getMonth() + 1}/${date.getDa
   })
   console.log(isUse, '完成了')
 }
-
+let editIndex = ref(0)
 let startNumber = ref(0)
 let printDate = ref('')
 let expressInformation = ref(!false)
@@ -60,6 +61,13 @@ const tableArrData = ref<tableType[]>([])
 const printArrdata = ref<tableType[]>([])
 // 处理输入数据
 const inputFun = () => {}
+
+// 编辑表格数据
+const formEdit = reactive({
+  item: '', // 商品名字
+  action: '', // 操作
+  Nub: '' // 序号
+})
 
 const pasetHandle = (event: { clipboardData: any }) => {
   tableArrData.value = [] // 清空数据
@@ -196,6 +204,31 @@ const inputText = '166A硒鼓3K页1个中通l已开电子'
 const result = extractCourierInfo(inputText)
 console.log(result.product) // 输出： "T-2309C高配版粉盒1个"
 console.log(result.courier) // 输出： "顺丰"
+
+/**
+ * 编辑行数据
+ * @param index 编辑到的第几行
+ * @param row 编辑的行数据
+ */
+const emitsEditRow = (index: number, row: tableType) => {
+  editIndex.value = index
+  dialogTableVisible.value = true
+  formEdit.item = row.item
+  formEdit.action = row.action
+  formEdit.Nub = row.Nub
+}
+
+// 保存编辑的数据
+const saveEdit = () => {
+  tableArrData.value.forEach((item, index, arr) => {
+    if (index === editIndex.value) {
+      item.item = formEdit.item
+      item.action = formEdit.action
+      item.Nub = formEdit.Nub
+    }
+  })
+  dialogTableVisible.value = false
+}
 </script>
 
 <template>
@@ -245,10 +278,44 @@ console.log(result.courier) // 输出： "顺丰"
       v-show="tableArrData.length !== 0"
       :table-arr="tableArrData"
       @select-data="(e) => emitsSelectData(e)"
+      @edit-row="(index, row) => emitsEditRow(index, row)"
     />
 
     <!-- <el-button @click="openVn">777</el-button> -->
     <el-button @click="printFilesInSequence(printArrdata)">一键打印</el-button>
+
+    <el-dialog
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      v-model="dialogTableVisible"
+      title="修改行信息"
+      :append-to-body="true"
+      top="10vh"
+    >
+      <el-form :model="formEdit" label-width="auto" style="max-width: 700px">
+        <el-form-item class="custom-width" label="请编辑序号:">
+          <el-input v-model="formEdit.Nub" />
+        </el-form-item>
+
+        <el-form-item label="请编辑操作:" prop="region" placeholder="请选择或者输入">
+          <el-select v-model="formEdit.action" allow-create filterable>
+            <el-option label="入库" value="入库" />
+            <el-option label="返厂" value="返厂" />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item class="custom-width full-width" label="请编辑品名:">
+          <el-input v-model="formEdit.item" />
+        </el-form-item>
+      </el-form>
+
+      <template v-slot:footer>
+        <span class="dialog-footer">
+          <el-button @click="dialogTableVisible = false">取 消</el-button>
+          <el-button type="primary" @click="saveEdit">确 定</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </main>
 </template>
 
@@ -297,5 +364,26 @@ console.log(result.courier) // 输出： "顺丰"
 }
 .el-input {
   width: auto;
+}
+
+.el-form {
+  display: grid;
+  grid-template-columns: repeat(2, 50%);
+  gap: 20px;
+
+  .full-width {
+    grid-column: span 2;
+  }
+  .el-form-item {
+    .el-input {
+      width: 100%;
+    }
+  }
+}
+.dialog-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
 }
 </style>

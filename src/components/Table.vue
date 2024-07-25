@@ -5,53 +5,27 @@
 -->
 <script setup lang="ts">
 import type { tableType } from '@/ctrl/data'
-import { defineEmits, ref } from 'vue'
-interface User {
-  date: string
-  name: string
-  address: string
-}
+import { defineEmits } from 'vue'
+
 const props = defineProps({
   tableArr: {
     type: Array<tableType>,
     required: true
   }
 })
-const tableData: User[] = [
-  {
-    date: '2016-05-04',
-    name: 'Aleyna Kutzner',
-    address: 'Lohrbergstr. 86c, Süd Lilli, Saarland'
-  },
-  {
-    date: '2016-05-03',
-    name: 'Helen Jacobi',
-    address: '760 A Street, South Frankfield, Illinois'
-  },
-  {
-    date: '2016-05-02',
-    name: 'Brandon Deckert',
-    address: 'Arnold-Ohletz-Str. 41a, Alt Malinascheid, Thüringen'
-  },
-  {
-    date: '2016-05-01',
-    name: 'Margie Smith',
-    address: '23618 Windsor Drive, West Ricardoview, Idaho'
-  }
-]
 
-const handleEdit = (index: number, row: User) => {
-  console.log(index, row)
-}
-const handleDelete = (index: number, row: User) => {
-  console.log(index, row)
-}
-const emits = defineEmits(['selectData', 'selectAllData'])
+const emits = defineEmits(['selectData', 'selectAllData', 'editRow', 'deleteRow'])
 const selectAdataHanle = (e: tableType[]) => {
   emits('selectData', e)
 }
 const selectAllDataHandle = (e: tableType[]) => {
   emits('selectData', e)
+}
+const handleEdit = (index: number, row: tableType) => {
+  emits('editRow', index, row)
+}
+const handleDelete = (index: number, row: tableType) => {
+  emits('deleteRow', index)
 }
 </script>
 
