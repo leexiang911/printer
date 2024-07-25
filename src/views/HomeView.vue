@@ -4,6 +4,7 @@ import Teble from '@/components/Table.vue'
 import type { tableType } from '@/ctrl/data'
 // 导入打印模块
 import { DTPWeb } from 'dtpweb'
+import { downloadLog } from '@/ctrl/download'
 
 const dialogTableVisible = ref(false)
 
@@ -90,7 +91,6 @@ const pasetHandle = (event: { clipboardData: any }) => {
     }
     arr.filter((i) => i !== '')
     const obj: tableType = {
-      action: cells[11],
       Nub: index.toString(),
       date: cells[0],
       shopName: cells[1],
@@ -98,7 +98,8 @@ const pasetHandle = (event: { clipboardData: any }) => {
       orderId: cells[3],
       item: cells[4],
       remark: cells[6],
-      trackingNumber: cells[9]
+      trackingNumber: cells[9],
+      action: cells[11]
     }
     if (startNumber.value) {
       obj.Nub = (Number(startNumber.value) + index).toString()
@@ -148,6 +149,11 @@ async function printFilesInSequence(dataArr: tableType[]) {
       }
     }
   })()
+
+  const i = window.confirm('是否下载日志').valueOf()
+  if (i) {
+    downloadLog(JSON.stringify(dataArr), 'data')
+  }
   return true
 }
 
