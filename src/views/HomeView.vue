@@ -132,11 +132,14 @@ async function printFilesInSequence(dataArr: tableType[]) {
     alert('没有可以打印内容')
     return
   }
-  for (const filename of dataArr) {
-    if (!(await printFile(filename))) {
-      return false
+
+  ;(async () => {
+    for (const filename of dataArr) {
+      if (!(await printFile(filename))) {
+        return false
+      }
     }
-  }
+  })()
   return true
 }
 
